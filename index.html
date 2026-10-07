@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brosur 3D Elegan — Klien</title>
+    <style>
+        /* reset & base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at 20% 30%, #1e1e2f, #0b0b12);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Poppins', system-ui, sans-serif;
+            padding: 1rem;
+            perspective: 1500px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* container utama dengan efek 3D */
+        .gallery-3d {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem 3rem;
+            max-width: 1100px;
+            width: 100%;
+            transform-style: preserve-3d;
+            transform: rotateX(4deg) rotateY(-2deg);
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-3d:hover {
+            transform: rotateX(2deg) rotateY(0deg);
+        }
+
+        /* setiap kartu brosur */
+        .brosur-card {
+            position: relative;
+            border-radius: 24px;
+            background: rgba(20, 20, 30, 0.7);
+            backdrop-filter: blur(8px);
+            box-shadow: 
+                0 30px 40px -15px rgba(0, 0, 0, 0.8),
+                0 0 0 1px rgba(255, 255, 255, 0.06),
+                inset 0 0 30px rgba(255, 255, 255, 0.02);
+            transform-style: preserve-3d;
+            /* PERBAIKAN: transform dasar ringan, tidak menggeser tombol */
+            transform: rotateY(0deg) rotateX(0deg);
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease;
+            cursor: pointer;
+            will-change: transform;
+        }
+
+        /* efek 3D elegan saat hover */
+        .brosur-card:hover {
+            /* PERBAIKAN: translateZ lebih kecil agar tombol tetap di area klik */
+            transform: rotateY(4deg) rotateX(3deg) translateZ(10px) scale(1.02);
+            box-shadow: 
+                0 40px 50px -15px rgba(0, 0, 0, 0.9),
+                0 0 0 1px rgba(210, 180, 140, 0.5),
+                0 0 30px rgba(210, 180, 140, 0.3);
+        }
+
+        /* lapisan kilau / border emas */
+        .brosur-card::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 26px;
+            background: linear-gradient(135deg, #d4af37, #f5e7a3, #b8860b, #d4af37);
+            opacity: 0.15;
+            z-index: -1;
+            transition: opacity 0.4s ease;
+            filter: blur(4px);
+            pointer-events: none;
+        }
+
+        .brosur-card:hover::before {
+            opacity: 0.45;
+            filter: blur(6px);
+        }
+
+        /* inner konten brosur */
+        .brosur-inner {
+            padding: 1.8rem 1.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            color: #f0eae1;
+            /* PERBAIKAN: hilangkan translateZ besar agar tombol stabil */
+            transform: translateZ(0);
+            transition: transform 0.4s ease;
+            position: relative;
+            z-index: 2;
+            pointer-events: auto;
+        }
+
+        .brosur-card:hover .brosur-inner {
+            /* PERBAIKAN: sedikit saja, tidak menggeser tombol jauh */
+            transform: translateZ(8px);
+        }
+
+        /* gambar / ikon brosur (3D look) */
+        .brosur-icon {
+            font-size: 3.5rem;
+            margin-bottom: 0.6rem;
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.6));
+            transform: translateZ(0);
+            transition: transform 0.4s ease;
+        }
+
+        .brosur-card:hover .brosur-icon {
+            transform: translateZ(15px) scale(1.05);
+        }
+
+        /* judul brosur */
+        .brosur-card h3 {
+            font-weight: 500;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #f5e7a3, #d4af37, #f5e7a3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+            transform: translateZ(0);
+        }
+
+        /* deskripsi singkat */
+        .brosur-card p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1.2rem;
+            line-height: 1.4;
+            transform: translateZ(0);
+            color: #cfc9c0;
+        }
+
+        /* tombol link */
+        .brosur-link {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 0.6rem 1.4rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            color: #1a1a1a;
+            background: linear-gradient(145deg, #f5e7a3, #d4af37);
+            box-shadow: 0 6px 0 #8b6914, 0 8px 15px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,240,0.5);
+            transition: all 0.15s ease;
+            /* PERBAIKAN PENTING: hilangkan translateZ yang membuat area klik melayang */
+            transform: translateZ(0);
+            pointer-events: auto;
+            text-shadow: 0 1px 1px rgba(255,255,200,0.6);
+            position: relative;
+            z-index: 10;
+            /* PERBAIKAN: hilangkan delay tap di mobile */
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            cursor: pointer;
+        }
+
+        .brosur-link:hover {
+            box-shadow: 0 4px 0 #8b6914, 0 10px 20px rgba(212, 175, 55, 0.4);
+            /* PERBAIKAN: geser hanya sedikit, tidak sampai menghilang dari kursor */
+            transform: translateY(-2px);
+            background: linear-gradient(145deg, #ffe9a7, #e6c229);
+            color: #000;
+        }
+
+        .brosur-link:active {
+            box-shadow: 0 2px 0 #8b6914;
+            transform: translateY(2px);
+        }
+
+        /* variasi warna aksen tiap brosur (tetap elegan) */
+        .brosur-card[data-index="0"] .brosur-icon { color: #9b8c7c; }
+        .brosur-card[data-index="1"] .brosur-icon { color: #8a9aa8; }
+        .brosur-card[data-index="2"] .brosur-icon { color: #b89b7b; }
+        .brosur-card[data-index="3"] .brosur-icon { color: #c0a0a8; }
+
+        /* PERBAIKAN: hapus rotasi per-kartu yang menggeser tombol.
+           Efek 3D bertingkat sekarang hanya dari galeri, bukan kartu. */
+
+        /* responsif */
+        @media (max-width: 700px) {
+            body { perspective: 800px; }
+            .gallery-3d {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                transform: rotateX(0deg) rotateY(0deg);
+            }
+            .gallery-3d:hover {
+                transform: rotateX(0deg) rotateY(0deg);
+            }
+            .brosur-card {
+                transform: none !important;
+            }
+            .brosur-card:hover {
+                transform: translateZ(6px) scale(1.01) !important;
+            }
+            .brosur-link {
+                /* Perbesar area klik di mobile untuk kemudahan */
+                padding: 0.8rem 1.8rem;
+                font-size: 1rem;
+            }
+        }
+
+        /* aksen latar belakang dekoratif */
+        .bg-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 70% 30%, rgba(212, 175, 55, 0.08), transparent 60%);
+            pointer-events: none;
+            z-index: -2;
+        }
+        .bg-glow2 {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 80%;
+            height: 80%;
+            background: radial-gradient(circle at 90% 90%, rgba(180, 140, 100, 0.06), transparent 70%);
+            pointer-events: none;
+            z-index: -2;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="bg-glow2"></div>
+
+    <div class="gallery-3d">
+        <!-- Brosur 1: Lorem Ipsum -->
+        <div class="brosur-card" data-index="0">
+            <div class="brosur-inner">
+                <div class="brosur-icon">📜</div>
+                <h3>Lorem Ipsum</h3>
+                <p>Dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.</p>
+                <a href="#" class="brosur-link" target="_blank" rel="noopener">Kunjungi</a>
+            </div>
+        </div>
+
+        <!-- Brosur 2: HP Bekas -->
+        <div class="brosur-card" data-index="1">
+            <div class="brosur-inner">
+                <div class="brosur-icon">📱</div>
+                <h3>HP Bekas</h3>
+                <p>Koleksi smartphone second berkualitas, garansi resmi, harga bersahabat.</p>
+                <a href="#" class="brosur-link" target="_blank" rel="noopener">Lihat Katalog</a>
+            </div>
+        </div>
+
+        <!-- Brosur 3: Meja & Kursi Fota -->
+        <div class="brosur-card" data-index="2">
+            <div class="brosur-inner">
+                <div class="brosur-icon">🪑</div>
+                <h3>Meja & Kursi Fota</h3>
+                <p>Furniture kayu premium, desain minimalis & elegan untuk ruang kerja anda.</p>
+                <a href="#" class="brosur-link" target="_blank" rel="noopener">Lihat Koleksi</a>
+            </div>
+        </div>
+
+        <!-- Brosur 4: Pernikahan -->
+        <div class="brosur-card" data-index="3">
+            <div class="brosur-inner">
+                <div class="brosur-icon">💍</div>
+                <h3>Pernikahan</h3>
+                <p>Paket dekorasi & dokumentasi pernikahan impian, romantis dan berkesan.</p>
+                <a href="#" class="brosur-link" target="_blank" rel="noopener">Detail Paket</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // --- KONFIGURASI LINK ---
+            const brochureLinks = [
+                'https://brosurprofesional.vercel.app/',
+                'https://brosur-hpbekas.vercel.app/',
+                'https://brosur-tokoh-sofa.vercel.app/',
+                'https://brosur-pernikahan.vercel.app/'
+            ];
+
+            const linkElements = document.querySelectorAll('.brosur-link');
+
+            linkElements.forEach((linkEl, index) => {
+                if (brochureLinks[index]) {
+                    linkEl.setAttribute('href', brochureLinks[index]);
+                } else {
+                    linkEl.setAttribute('href', '#');
+                }
+            });
+
+            // --- Efek 3D mengikuti mouse (hanya desktop) ---
+            const gallery = document.querySelector('.gallery-3d');
+
+            if (window.innerWidth > 700) {
+                gallery.addEventListener('mousemove', (e) => {
+                    const rect = gallery.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateY = ((x - centerX) / centerX) * 4;
+                    const rotateX = ((centerY - y) / centerY) * 3;
+
+                    gallery.style.transform = `rotateX(${4 + rotateX * 0.5}deg) rotateY(${-2 + rotateY * 0.5}deg)`;
+                });
+
+                gallery.addEventListener('mouseleave', () => {
+                    gallery.style.transform = 'rotateX(4deg) rotateY(-2deg)';
+                });
+            }
+
+            // PERBAIKAN: paksa semua link untuk membuka di tab baru
+            // dan pastikan sekali klik langsung terhubung tanpa delay.
+            linkElements.forEach((linkEl) => {
+                // Hapus delay 300ms di mobile (jika ada)
+                linkEl.addEventListener('touchstart', function() {
+                    // Tidak melakukan preventDefault agar tetap navigasi
+                }, { passive: true });
+            });
+        })();
+    </script>
+</body>
+</html>
